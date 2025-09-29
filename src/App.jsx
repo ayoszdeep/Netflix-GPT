@@ -1,14 +1,28 @@
 
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
+import Header from './components/Header.jsx'
+import Browse from './components/Browse.jsx'
+import Login from './components/Login.jsx'
+
+const appRouter=createBrowserRouter([
+  {
+    path:"/",
+    element:<Login/>
+  },
+  {
+    path:"/browser",
+    element:<Browse/>
+  }
+])
 
 function App() {
   
 
   return (
   
-      <div>
-      <h1 className='text-7xl text-red-500'> hello evryone</h1>
-       </div>
+     <RouterProvider router={appRouter}/>
+
           
     
   )
