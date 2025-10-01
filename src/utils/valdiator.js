@@ -11,7 +11,7 @@ export const checkValidData = (email, password,confirmPassword) => {
         return "Password must be at least 8 characters long and contain at least one letter and one number";
     }
     if (confirmPassword !== null && password !== confirmPassword) {
-        alert("Password and Confirm Password do not match");
+      
         return "Password and Confirm Password do not match";
     }
     
