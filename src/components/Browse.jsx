@@ -1,16 +1,10 @@
 // components/Browse.jsx (or Browser.jsx)
 import React from 'react'
+import Header from './Header'
 
 const Browser = () => {
   return (
-    <div style={{
-      backgroundColor: 'green',
-      color: 'white',
-      padding: '20px',
-      fontSize: '24px'
-    }}>
-      Browser 
-    </div>
+   <Header/>
   )
 }
 
