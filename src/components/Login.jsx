@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import { checkValidData } from '../utils/valdiator';
 import {
@@ -8,11 +7,8 @@ import {
   updateProfile
 } from 'firebase/auth';
 import { auth } from '../utils/firebase';
-import { useDispatch } from 'react-redux';
 
 const Login = () => {
-  const navigate = useNavigate();
-  const dispatch=useDispatch();
   const [signUpform, setSignUpform] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   
@@ -42,18 +38,13 @@ const Login = () => {
         createUserWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
             const user = userCredential.user;
-            // Get form values
             const firstName = firstNameRef.current?.value || '';
             const lastName = lastNameRef.current?.value || '';
-            const phoneNumber = phoneRef.current?.value || '';
-            
+            // phone number is optional and stored via profile or other flow
             // Update the user's profile with full name
             return updateProfile(user, {
               displayName: `${firstName} ${lastName}`,
               photoURL: null 
-            }).then(() => {
-    
-              navigate('/browser');
             });
           })
           .catch((error) => {
@@ -63,9 +54,7 @@ const Login = () => {
       } else {
         // Sign In
         signInWithEmailAndPassword(auth, email, password)
-          .then(() => {
-            navigate('/browser');
-          })
+         
           .catch((error) => {
             const errorCode = error.code;
             alert(errorCode);

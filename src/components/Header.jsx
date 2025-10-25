@@ -1,11 +1,14 @@
 // Header.jsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
 import { useSelector } from 'react-redux';
+import { addUser,removeUser } from '../utils/userSlice';
+import { useDispatch } from 'react-redux';
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch=useDispatch();
   const user = useSelector((store) => store.user);
 
   const handleSignOut = () => {
@@ -18,6 +21,28 @@ const Header = () => {
         console.error('Sign out error', error);
       });
   };
+ 
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(addUser({
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL
+        }));
+        // navigate to browser when auth state indicates a signed-in user
+        navigate('/browser');
+      } else {
+        dispatch(removeUser());
+        navigate('/')
+      }
+    });
+
+    return () => unsubscribe();
+  }, [dispatch, navigate]);
 
   return (
     <div className="flex justify-between fixed top-0 left-0 right-0 bg-gradient-to-b from-black w-full items-center z-10 px-6 py-3 h-16">
