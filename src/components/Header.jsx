@@ -45,7 +45,7 @@ const Header = () => {
   }, [dispatch, navigate]);
 
   return (
-    <div className="flex justify-between fixed top-0 left-0 right-0 bg-gradient-to-b from-black w-full items-center z-10 px-6 py-3 h-16">
+    <div className="flex justify-between fixed top-0 left-0 right-0 bg-black/30 backdrop-blur-sm w-full items-center z-20 px-6 py-3 h-16">
       <img
         className="h-14 w-auto"
         src="https://images.ctfassets.net/y2ske730sjqp/821Wg4N9hJD8vs5FBcCGg/9eaf66123397cc61be14e40174123c40/Vector__3_.svg?w=460"

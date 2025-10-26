@@ -8,13 +8,21 @@ export const MainContainer = () => {
     if(movies===null) return;
     const MainMovie=movies[0];
     // console.log(MainMovie);
+    const {overview,original_title,id}=MainMovie
+    
+    
     
   return (
-    <div>
-          <VideoTitle/>
-        <VideoBackground/>
-      
-
+    <div className="relative">
+      <div className="relative w-full">
+        <VideoBackground movieId={id} />
+        <div className="absolute inset-0 pointer-events-none">
+          {/* overlay content sits above the video */}
+          <div className="pointer-events-auto">
+            <VideoTitle title={original_title} overview={overview} />
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
