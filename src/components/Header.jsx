@@ -1,28 +1,23 @@
-// Header.jsx
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
-import { useSelector } from 'react-redux';
-import { addUser,removeUser } from '../utils/userSlice';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { addUser, removeUser } from '../utils/userSlice';
 
 const Header = () => {
   const navigate = useNavigate();
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
 
+  // Sign out handler
   const handleSignOut = () => {
     const auth = getAuth();
     signOut(auth)
-      .then(() => {
-        navigate('/');
-      })
-      .catch((error) => {
-        console.error('Sign out error', error);
-      });
+      .then(() => navigate('/'))
+      .catch((error) => console.error('Sign out error', error));
   };
- 
 
+  // Listen for auth state and manage userData
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -33,44 +28,64 @@ const Header = () => {
           displayName: user.displayName,
           photoURL: user.photoURL
         }));
-        // navigate to browser when auth state indicates a signed-in user
         navigate('/browser');
       } else {
         dispatch(removeUser());
-        navigate('/')
+        navigate('/');
       }
     });
-
     return () => unsubscribe();
   }, [dispatch, navigate]);
 
   return (
-    <div className="flex justify-between fixed top-0 left-0 right-0 bg-black/30 backdrop-blur-sm w-full items-center z-20 px-6 py-3 h-16">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 px-7 py-3 flex justify-between items-center h-16 border-b border-neutral-800 shadow">
+      {/* Left: Logo */}
       <img
-        className="h-14 w-auto"
+        className="h-9 sm:h-11 cursor-pointer transition-transform hover:scale-110"
         src="https://images.ctfassets.net/y2ske730sjqp/821Wg4N9hJD8vs5FBcCGg/9eaf66123397cc61be14e40174123c40/Vector__3_.svg?w=460"
         alt="Header Logo"
+        onClick={() => navigate('/browser')}
       />
 
-      {user && (
-        <div className="flex items-center gap-3">
-          {user.displayName && <span className="text-white">{user.displayName}</span>}
+      {/* Right: User & Auth Buttons */}
+      {user ? (
+        <div className="flex items-center gap-4 text-white">
+          {user.displayName && (
+            <span className="hidden sm:inline font-medium text-sm tracking-wide">
+              {user.displayName}
+            </span>
+          )}
+
+          {/* User Avatar or Placeholder */}
           {user.photoURL ? (
-            <img src={user.photoURL} alt="avatar" className="h-9 w-9 rounded-full object-cover" />
+            <img
+              src={user.photoURL}
+              alt="avatar"
+              className="h-9 w-9 rounded-full object-cover border border-white/20 shadow-md"
+            />
           ) : (
-            <div className="h-9 w-9 rounded-full bg-gray-600 flex items-center justify-center text-white">
+            <div className="h-9 w-9 rounded-full bg-gray-700 flex items-center justify-center font-bold text-xl">
               {user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
             </div>
           )}
+
+          {/* Sign Out Button */}
           <button
             onClick={handleSignOut}
-            className="ml-2 bg-red-600 text-white rounded px-2 py-0.5 border"
+            className="bg-red-600 hover:bg-red-700 px-4 py-1.5 rounded-md text-sm font-medium shadow-sm border border-red-700 transition-all"
           >
             Sign Out
           </button>
         </div>
+      ) : (
+        <button
+          onClick={() => navigate('/')}
+          className="bg-white text-black rounded px-4 py-1 font-medium hover:bg-gray-200 transition shadow"
+        >
+          Login
+        </button>
       )}
-    </div>
+    </header>
   );
 };
 
